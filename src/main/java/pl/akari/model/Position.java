@@ -1,8 +1,10 @@
 package main.java.pl.akari.model;
 
+import java.util.Objects;
+
 public class Position {
-    private int row;
-    private int col;
+    private final int row;
+    private final int col;
 
     public Position(int row, int col) {
         this.row = row;
@@ -15,5 +17,27 @@ public class Position {
 
     public int getCol() {
         return col;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Position)) {
+            return false;
+        }
+        Position other = (Position) obj;
+        return row == other.row && col == other.col;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, col);
+    }
+
+    @Override
+    public String toString() {
+        return "(" + row + ", " + col + ")";
     }
 }

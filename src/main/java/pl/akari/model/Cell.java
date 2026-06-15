@@ -1,6 +1,6 @@
 package main.java.pl.akari.model;
 
-public class Cell {
+public class Cell implements Cloneable {
     private final CellType type;
     private final Integer wallNumber;
     private boolean bulb;
@@ -12,7 +12,7 @@ public class Cell {
             throw new IllegalArgumentException("Cell type cannot be null");
         }
         if (type == CellType.BLACK_NUMBERED) {
-            throw new IllegalArgumentException("Use Cell(Integer wallNumber) for BLACK_NUMBERED cells");
+            throw new IllegalArgumentException("Use Cell(Integer wallNumber) for numbered black cells");
         }
 
         this.type = type;
@@ -62,7 +62,13 @@ public class Cell {
     }
 
     public void setBulb(boolean bulb) {
+        if (bulb && type != CellType.WHITE) {
+            throw new IllegalStateException("Bulb can be placed only on a white cell");
+        }
         this.bulb = bulb;
+        if (bulb) {
+            this.marked = false;
+        }
     }
 
     public boolean isMarked() {
@@ -70,6 +76,12 @@ public class Cell {
     }
 
     public void setMarked(boolean marked) {
+        if (marked && type != CellType.WHITE) {
+            throw new IllegalStateException("Only white cells can be marked");
+        }
+        if (marked && bulb) {
+            throw new IllegalStateException("Cannot mark a cell that already contains a bulb");
+        }
         this.marked = marked;
     }
 
@@ -79,5 +91,22 @@ public class Cell {
 
     public void setIlluminated(boolean illuminated) {
         this.illuminated = illuminated;
+    }
+
+    public boolean isWhite() {
+        return type == CellType.WHITE;
+    }
+
+    public boolean isBlack() {
+        return type == CellType.BLACK || type == CellType.BLACK_NUMBERED;
+    }
+
+    public boolean isNumberedBlack() {
+        return type == CellType.BLACK_NUMBERED;
+    }
+
+    @Override
+    public Cell clone() {
+        return new Cell(this);
     }
 }
